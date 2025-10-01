@@ -44,7 +44,7 @@ def main():
     print(response.text)
     
 def print_usage():
-    print("Usage: uv run main.py \"Your prompt here\") [--verbose]")
+    print("Usage: uv run main.py <\"Your prompt here\"> [--verbose]")
     os._exit(1)
 
 if __name__ == "__main__":
