@@ -20,3 +20,4 @@ def get_files_info(working_directory, directory="."):
         return f"Error: Unable to list directory '{directory}' - {str(e)}" 
     
     return lines_to_return.strip()
+

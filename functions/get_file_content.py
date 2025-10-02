@@ -1,5 +1,6 @@
 from os import path
-# from config import MAX_READ_SIZE
+# from config import MAX_READ_SIZE
+
 MAX_READ_SIZE = 10000
 
 def get_file_content(working_directory, file_path="."):

@@ -64,8 +64,8 @@ class TestGetFileContent(unittest.TestCase):
         self.assertEqual(result, 'Error: Cannot read "/Users/ArrayOfLilly/workspace/github.com/ArrayOfLilly/magentic/somefile.txt" as it is outside the permitted working directory')
         
     def test_large_file_truncation(self):
-        result = get_file_content("calculator", "lorem.txt")
-        self.assertIn("[...File \"lorem.txt\" truncated at 10000 characters]", result)
+        result = get_file_content("calculator", "lipsum.txt")
+        self.assertIn("[...File \"lipsum.txt\" truncated at 10000 characters]", result)
     
 print("Testing get_file_content function:")    
 print("**********************************************************************")
@@ -140,8 +140,8 @@ class TestRunPythonFile(unittest.TestCase):
         self.assertEqual(result, 'Error: Cannot execute "../main.py" as it is outside the permitted working directory')
         
     def test_run_non_python_file(self):
-        result = run_python_file("calculator", "lorem.txt")
-        self.assertEqual(result, 'Error: "lorem.txt" is not a Python file.')  
+        result = run_python_file("calculator", "lipsum.txt")
+        self.assertEqual(result, 'Error: "lipsum.txt" is not a Python file.')  
         
 print("Testing run_python_file function:")
 print("**********************************************************************")
