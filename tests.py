@@ -1,6 +1,7 @@
 # from functions.get_files_info import get_files_info
 # from functions.get_file_content import get_file_content
-from functions.write_file import write_file
+# from functions.write_file import write_file
+from functions.run_python_file import run_python_file
 
 # print("Testing get_files_info function:")
 # print("**********************************************************************")
@@ -19,8 +20,8 @@ from functions.write_file import write_file
 
 # print("Testing get_file_content function:")
 # print("**********************************************************************")
-# # print("Result for 'lorem.txt' in current directory:\n")
-# # print(get_file_content("calculator", "lorem.txt"))
+# # print("Result for 'lipsum.txt' in current directory:\n")
+# # print(get_file_content("calculator", "lipsum.txt"))
 # print("----------------------------------------------------------------------")
 # print("Result for 'main.py' in current directory:\n")
 # print(get_file_content("calculator", "main.py"))
@@ -35,13 +36,24 @@ from functions.write_file import write_file
 # print(get_file_content("calculator", "pkg/does_not_exist.py"))
 # print("\n\n")
 
-print("Testing write_file function:")
+# print("Testing write_file function:")
+# print("**********************************************************************")
+# print("Result for writing to 'lorem.txt' in current directory:")
+# print(write_file("calculator", "lorem.txt", "wait, this isn't lorem ipsum"))
+# print("----------------------------------------------------------------------")
+# print("Result for writing to 'morelorem.txt' in 'pkg' directory:")
+# print(write_file("calculator", "pkg/morelorem.txt", "lorem ipsum dolor sit amet"))
+# print("----------------------------------------------------------------------")
+# print("Result for writing to '/tmp/temp.txt' in '/tmp' directory:")
+# print(write_file("calculator", "/tmp/temp.txt", "this should not be allowed"))
+
+print("Testing run_python_file function:")
 print("**********************************************************************")
-print("Result for writing to 'lorem.txt' in current directory:")
-print(write_file("calculator", "lorem.txt", "wait, this isn't lorem ipsum"))
+print(run_python_file("calculator", "main.py"))
 print("----------------------------------------------------------------------")
-print("Result for writing to 'morelorem.txt' in 'pkg' directory:")
-print(write_file("calculator", "pkg/morelorem.txt", "lorem ipsum dolor sit amet"))
+print(run_python_file("calculator", "main.py", ["3 + 5"]))
 print("----------------------------------------------------------------------")
-print("Result for writing to '/tmp/temp.txt' in '/tmp' directory:")
-print(write_file("calculator", "/tmp/temp.txt", "this should not be allowed"))
+print(run_python_file("calculator", "../main.py"))
+print("----------------------------------------------------------------------")
+print(run_python_file("calculator", "nonexistent.py"))
+print("\n\n")

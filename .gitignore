@@ -13,4 +13,4 @@ wheels/
 # Virtual environments
 .venv/
 .env
-calculator/lorem.txt
+calculator/lipsum.txt
