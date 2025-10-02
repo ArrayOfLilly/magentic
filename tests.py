@@ -1,13 +1,35 @@
 from functions.get_files_info import get_files_info
+from functions.get_file_content import get_file_content
 
-print(get_files_info("calculator", "."))
+# print("Testing get_files_info function:")
+# print("**********************************************************************")
+# print("Result for current directory:")
+# print(get_files_info("calculator", "."))
+# print("----------------------------------------------------------------------")
+# print("Result for 'pkg' directory:")
+# print(get_files_info("calculator", "pkg"))
+# print("----------------------------------------------------------------------")
+# print("Result for '/bin' directory:")
+# print(get_files_info("calculator", "/bin"))
+# print("----------------------------------------------------------------------")
+# print("Result for '../' directory:")
+# print(get_files_info("calculator", "../"))
+# print("")
+# print("")
+
+print("Testing get_file_content function:")
+print("**********************************************************************")
+# print("Result for 'lorem.txt' in current directory:\n")
+# print(get_file_content("calculator", "lorem.txt"))
 print("----------------------------------------------------------------------")
-
-print(get_files_info("calculator", "pkg"))
+print("Result for 'main.py' in current directory:\n")
+print(get_file_content("calculator", "main.py"))
 print("----------------------------------------------------------------------")
-
-print(get_files_info("calculator", "/bin"))
+print("Result for 'calculator.py' in 'pkg' directory:\n")
+print(get_file_content("calculator", "pkg/calculator.py"))
 print("----------------------------------------------------------------------")
-
-print(get_files_info("calculator", "../"))
-
+print("Result for '/bin/cat' in '/bin' directory:")
+print(get_file_content("calculator", "/bin/cat"))
+print("----------------------------------------------------------------------")
+print("Result for 'does_not_exist.py' in 'pkg' directory:")
+print(get_file_content("calculator", "pkg/does_not_exist.py"))
