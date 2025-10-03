@@ -14,3 +14,4 @@ wheels/
 .venv/
 .env
 calculator/lipsum.txt
+calculator/lorem.txt

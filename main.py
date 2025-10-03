@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 from functions.function_schemas import *
+from call_function import call_function
+from pprint import pprint
 
 def main():
     logging.getLogger().setLevel(logging.CRITICAL)
@@ -72,7 +74,14 @@ All paths you provide should be relative to the working directory. You do not ne
     print("Function calls:")        
     if hasattr(response, "function_calls") and response.function_calls:
             for fc in response.function_calls:
-                print(f"Calling function: {fc.name}({fc.args})")
+                function_call_result = call_function(fc, verbose)
+                if hasattr(function_call_result, 'parts') and len(function_call_result.parts) > 0:
+                    if verbose:
+                        print(f"-> {function_call_result.parts[0].function_response.response}")
+                else:
+                    raise Exception(f"Function call failed: {function_call_result.parts[0].function_response.response}")
+                
+                    
     else:
         print("No function calls in response")
     

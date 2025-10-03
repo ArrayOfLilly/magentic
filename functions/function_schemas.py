@@ -24,7 +24,7 @@ schema_get_file_content = types.FunctionDeclaration(
     parameters=types.Schema(
         type=types.Type.OBJECT,
         properties={
-            "file": types.Schema(
+            "file_path": types.Schema(
                 type=types.Type.STRING,
                 description="The name of the file to read.",
             ),
@@ -38,7 +38,7 @@ schema_write_file = types.FunctionDeclaration(
     parameters=types.Schema(
         type=types.Type.OBJECT,
         properties={
-            "file": types.Schema(
+            "file_path": types.Schema(
                 type=types.Type.STRING,
                 description="The name of the file to write.",
             ),
@@ -56,7 +56,7 @@ schema_run_python_file = types.FunctionDeclaration(
     parameters=types.Schema(
         type=types.Type.OBJECT,
         properties={
-            "file": types.Schema(
+            "file_path": types.Schema(
                 type=types.Type.STRING,
                 description="The name of the Python file to run.",
             ),
