@@ -72,19 +72,36 @@ All paths you provide should be relative to the working directory. You do not ne
     
     print()   
     print("Function calls:")        
-    if hasattr(response, "function_calls") and response.function_calls:
-            for fc in response.function_calls:
-                function_call_result = call_function(fc, verbose)
-                if hasattr(function_call_result, 'parts') and len(function_call_result.parts) > 0:
-                    if verbose:
-                        print(f"-> {function_call_result.parts[0].function_response.response}")
-                else:
-                    raise Exception(f"Function call failed: {function_call_result.parts[0].function_response.response}")
+    # if hasattr(response, "function_calls") and response.function_calls:
+    #         for fc in response.function_calls:
+    #             function_call_result = call_function(fc, verbose)
+    #             if hasattr(function_call_result, 'parts') and len(function_call_result.parts) > 0:
+    #                 if verbose:
+    #                     print(f"-> {function_call_result.parts[0].function_response.response}")
+    #             else:
+    #                 raise Exception(f"Function call failed: {function_call_result.parts[0].function_response.response}")
                 
                     
-    else:
-        print("No function calls in response")
+    # else:
+    #     print("No function calls in response")
     
+    if not response.function_calls:
+        return response.text
+
+    function_responses = []
+    for function_call_part in response.function_calls:
+        function_call_result = call_function(function_call_part, verbose)
+        if (
+            not function_call_result.parts
+            or not function_call_result.parts[0].function_response
+        ):
+            raise Exception("empty function call result")
+        if verbose:
+            print(f"-> {function_call_result.parts[0].function_response.response}")
+        function_responses.append(function_call_result.parts[0])
+
+    if not function_responses:
+        raise Exception("no function responses generated, exiting.")
 def print_usage():
     print("Usage: uv run main.py <\"Your prompt here\"> [--verbose]")
     os._exit(1)
