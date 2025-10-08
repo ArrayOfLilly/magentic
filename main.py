@@ -5,12 +5,60 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 from functions.function_schemas import *
-from call_function import call_function
+from call_function import *
 from pprint import pprint
+from prompts import *
+from config import MAX_ITERS
 
 def main():
     logging.getLogger().setLevel(logging.CRITICAL)
 
+    api_key = load_apikey()
+    client = genai.Client(api_key=api_key)
+    
+    verbose = False
+    
+    verbose = "--verbose" in sys.argv
+    args = []
+    for arg in sys.argv[1:]:
+        if not arg.startswith("--"):
+            args.append(arg)
+
+    if not args:
+        print_usage()   
+        
+    user_prompt = " ".join(args)
+    if verbose:
+        print(f"User prompt: {user_prompt}\n")
+    
+    messages = [
+        types.Content(role="user",parts=[types.Part(text=user_prompt)]),]
+    
+    iters = 0
+    while True:
+        iters += 1
+        print(f"Iteration {iters}")
+        if iters > MAX_ITERS:
+            print(f"Maximum iterations ({MAX_ITERS}) reached.")
+            sys.exit(1)
+
+        try:
+            final_response = generate_content(client, messages, verbose)
+            if final_response:
+                print("Final response:")
+                print(final_response)
+                break
+        except Exception as e:
+            print(f"Error in generate_content: {e}")
+    
+def print_usage():
+    print()
+    print("AI Code Assistant")
+    print('\nUsage: python main.py "your prompt here" [--verbose]')
+    print('Example: python main.py "How do I fix the calculator?"')
+    os._exit(1)
+    
+def load_apikey():
     try:
         load_dotenv()
         api_key = os.environ.get("GEMINI_API_KEY")
@@ -20,35 +68,9 @@ def main():
         raise KeyError("GEMINI_API_KEY not found in environment variables.")
     except Exception as e:
         raise (f"An error occurred while retrieving GEMINI_API_KEY: {e}")
+    return api_key
 
-    client = genai.Client(api_key=api_key)
-    
-    verbose = False
-    if len(sys.argv) > 1:
-        if sys.argv[1] == "--verbose" or sys.argv[1] == "-h":
-            print_usage()
-        user_prompt = sys.argv[1]
-        if len(sys.argv) > 2:
-            verbose = sys.argv[2] == "--verbose"
-    else:
-        print_usage()
-        
-    system_prompt = """
-You are a helpful AI coding agent.
-
-When a user asks a question or makes a request, make a function call plan. You can perform the following operations:
-
-- List files and directories
-- Read file contents
-- Execute Python files with optional arguments
-- Write or overwrite files
-
-All paths you provide should be relative to the working directory. You do not need to specify the working directory in your function calls as it is automatically injected for security reasons.
-"""
-        
-    messages = [
-        types.Content(role="user",parts=[types.Part(text=user_prompt)]),]
-    
+def generate_content(client, messages, verbose):
     response = client.models.generate_content(
         model='gemini-2.0-flash-001',
         contents=messages,
@@ -57,12 +79,9 @@ All paths you provide should be relative to the working directory. You do not ne
                                            ),
         )
     
-    if verbose:
-        print(f"User prompt: {user_prompt}")
+    if verbose:        
         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
-        print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
-        print()
-        
+        print(f"Response tokens: {response.usage_metadata.candidates_token_count}\n")
     
     print("Response:")
     if hasattr(response, "text") and response.text:
@@ -70,21 +89,12 @@ All paths you provide should be relative to the working directory. You do not ne
     else:
         print("There are non-text parts in the response")
     
-    print()   
-    print("Function calls:")        
-    # if hasattr(response, "function_calls") and response.function_calls:
-    #         for fc in response.function_calls:
-    #             function_call_result = call_function(fc, verbose)
-    #             if hasattr(function_call_result, 'parts') and len(function_call_result.parts) > 0:
-    #                 if verbose:
-    #                     print(f"-> {function_call_result.parts[0].function_response.response}")
-    #             else:
-    #                 raise Exception(f"Function call failed: {function_call_result.parts[0].function_response.response}")
-                
-                    
-    # else:
-    #     print("No function calls in response")
-    
+    print("\nFunction calls:")       
+    if response.candidates:
+        for candidate in response.candidates:
+            function_call_content = candidate.content
+            messages.append(function_call_content)
+
     if not response.function_calls:
         return response.text
 
@@ -101,10 +111,9 @@ All paths you provide should be relative to the working directory. You do not ne
         function_responses.append(function_call_result.parts[0])
 
     if not function_responses:
-        raise Exception("no function responses generated, exiting.")
-def print_usage():
-    print("Usage: uv run main.py <\"Your prompt here\"> [--verbose]")
-    os._exit(1)
+         raise Exception("no function responses generated, exiting.")
+
+    messages.append(types.Content(role="user", parts=function_responses))
 
 if __name__ == "__main__":
     main()

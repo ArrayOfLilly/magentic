@@ -1,1 +1,3 @@
 MAX_READ_SIZE = 10000
+WORKING_DIR = "./calculator"
+MAX_ITERS = 20
